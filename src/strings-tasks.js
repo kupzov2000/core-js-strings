@@ -488,8 +488,31 @@ function extractEmails(str) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const firstHalfAlphabet = alphabet
+    .slice(0, 13)
+    .concat(alphabet.slice(26, 39));
+  const secondAlphabet = alphabet.slice(13, 26).concat(alphabet.slice(39, 52));
+
+  const notLetters = /[^a-zA-Z ]/.test(str);
+
+  const rot13 = str
+    .slice(0, str.length)
+    .split(' ')
+    .map((word) =>
+      word
+        .split('')
+        .map((char) =>
+          firstHalfAlphabet.includes(char)
+            ? secondAlphabet[firstHalfAlphabet.indexOf(char)]
+            : firstHalfAlphabet[secondAlphabet.indexOf(char)]
+        )
+        .join('')
+    )
+    .join(' ');
+
+  return notLetters ? rot13.concat(str[str.length - 1]) : rot13;
 }
 
 /**
